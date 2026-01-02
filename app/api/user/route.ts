@@ -14,27 +14,38 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Try to get username from predictions table first
+    // Check user_sessions table first (primary source of truth)
+    const { data: sessionData } = await supabase
+      .from('user_sessions')
+      .select('username')
+      .eq('session_id', sessionId)
+      .maybeSingle();
+
+    if (sessionData?.username) {
+      return NextResponse.json({ username: sessionData.username });
+    }
+
+    // Fallback: try to get username from predictions table (for backward compatibility)
     const { data: predictionData } = await supabase
       .from('predictions')
       .select('username')
       .eq('session_id', sessionId)
       .not('username', 'is', null)
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (predictionData?.username) {
       return NextResponse.json({ username: predictionData.username });
     }
 
-    // If not found in predictions, try tournament_predictions
+    // Fallback: try tournament_predictions
     const { data: tournamentData } = await supabase
       .from('tournament_predictions')
       .select('username')
       .eq('session_id', sessionId)
       .not('username', 'is', null)
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (tournamentData?.username) {
       return NextResponse.json({ username: tournamentData.username });
@@ -64,34 +75,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if username is already taken by another session
-    const { data: existingInPredictions } = await supabase
-      .from('predictions')
+    // Check if username is already taken in user_sessions (primary check)
+    const { data: existingInSessions } = await supabase
+      .from('user_sessions')
       .select('session_id')
       .eq('username', username)
       .neq('session_id', session_id)
-      .limit(1)
       .maybeSingle();
 
-    if (existingInPredictions) {
+    if (existingInSessions) {
       return NextResponse.json(
         { error: 'USERNAME_TAKEN', message: 'Táto prezývka je už obsadená' },
         { status: 409 }
       );
     }
 
-    const { data: existingInTournament } = await supabase
-      .from('tournament_predictions')
-      .select('session_id')
-      .eq('username', username)
-      .neq('session_id', session_id)
-      .limit(1)
-      .maybeSingle();
+    // Insert or update username in user_sessions table
+    const { error: sessionError } = await supabase
+      .from('user_sessions')
+      .upsert(
+        {
+          session_id: session_id,
+          username: username,
+          updated_at: new Date().toISOString()
+        },
+        { onConflict: 'session_id' }
+      );
 
-    if (existingInTournament) {
+    if (sessionError) {
+      console.error('Error upserting user_sessions:', sessionError);
       return NextResponse.json(
-        { error: 'USERNAME_TAKEN', message: 'Táto prezývka je už obsadená' },
-        { status: 409 }
+        { error: 'Failed to save username' },
+        { status: 500 }
       );
     }
 
