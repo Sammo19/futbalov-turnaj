@@ -63,14 +63,14 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
   // Auto-refresh stats every 5 seconds for live updates
   useEffect(() => {
     // Only poll if username is set (user is actively using the app)
-    if (!usernameState) return;
+    if (!username) return;
 
     const interval = setInterval(() => {
       loadTournamentStats();
     }, 5000); // Refresh every 5 seconds
 
     return () => clearInterval(interval);
-  }, [usernameState]);
+  }, [username]);
 
   const loadUsername = async () => {
     try {
