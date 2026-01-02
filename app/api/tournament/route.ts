@@ -3,7 +3,8 @@ import { challongeClient } from '@/lib/challonge/client';
 
 export async function GET() {
   try {
-    const tournamentId = process.env.NEXT_PUBLIC_TOURNAMENT_ID;
+    // Try server-side env var first, then fall back to client-side
+    const tournamentId = process.env.TOURNAMENT_ID || process.env.NEXT_PUBLIC_TOURNAMENT_ID;
 
     if (!tournamentId) {
       return NextResponse.json(

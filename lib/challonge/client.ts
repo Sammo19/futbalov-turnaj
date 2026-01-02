@@ -115,7 +115,8 @@ export class ChallongeClient {
 }
 
 // Create a singleton instance
-const username = process.env.NEXT_PUBLIC_CHALLONGE_USERNAME || '';
-const apiKey = process.env.NEXT_PUBLIC_CHALLONGE_API_KEY || '';
+// Try server-side env vars first (without NEXT_PUBLIC_), then fall back to client-side
+const username = process.env.CHALLONGE_USERNAME || process.env.NEXT_PUBLIC_CHALLONGE_USERNAME || '';
+const apiKey = process.env.CHALLONGE_API_KEY || process.env.NEXT_PUBLIC_CHALLONGE_API_KEY || '';
 
 export const challongeClient = new ChallongeClient(username, apiKey);
