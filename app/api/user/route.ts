@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       .eq('username', username)
       .neq('session_id', session_id)
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (existingInPredictions) {
       return NextResponse.json(
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       .eq('username', username)
       .neq('session_id', session_id)
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (existingInTournament) {
       return NextResponse.json(
