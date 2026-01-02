@@ -129,10 +129,6 @@ export function UsernameModal({ onSubmit }: UsernameModalProps) {
             )}
           </button>
         </form>
-
-        <p className="mt-4 text-xs text-slate-400 text-center">
-          Prezývka sa uloží do databázy a môžeš ju neskôr zmeniť
-        </p>
       </div>
     </div>
   );
