@@ -1,36 +1,181 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏆 Challonge Tournament Betting App
 
-## Getting Started
+Next.js aplikácia na zobrazovanie turnajov z Challonge s možnosťou tipovania výsledkov zápasov.
 
-First, run the development server:
+## ✨ Funkcie
+
+- 📊 **Real-time zobrazenie turnaja** - Automatické obnovenie každých 30 sekúnd
+- 🎯 **Tipovanie zápasov** - Anonymné tipovanie bez registrácie
+- 📈 **Štatistiky tipov** - Zobrazenie percentuálneho rozdelenia tipov
+- 🎨 **Moderný dizajn** - Responzívne UI s TailwindCSS
+- ⚡ **Rýchle** - Optimalizované pomocou Next.js 15 a React 19
+
+## 🚀 Rýchle spustenie
+
+### 1. Nainštaluj závislosti
+
+```bash
+npm install
+```
+
+### 2. Nastav Supabase
+
+1. Vytvor účet na [supabase.com](https://supabase.com)
+2. Vytvor nový projekt
+3. V SQL Editore spusti SQL z `supabase-schema.sql`
+4. Skopíruj Supabase URL a Anon Key z Settings > API
+
+### 3. Aktualizuj .env.local
+
+Súbor `.env.local` už obsahuje tvoje Challonge údaje. Len doplň Supabase:
+
+```bash
+# Challonge API Configuration (už nastavené)
+NEXT_PUBLIC_CHALLONGE_USERNAME=Sammo108
+NEXT_PUBLIC_CHALLONGE_API_KEY=5f06c5b28acc6f018ad8c546954fa5b68afbcd8aeadc123e
+NEXT_PUBLIC_TOURNAMENT_ID=f8qurooc
+
+# Supabase Configuration (doplň tieto)
+NEXT_PUBLIC_SUPABASE_URL=tvoja_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tvoj_supabase_anon_key
+```
+
+### 4. Spusti development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Otvor [http://localhost:3000](http://localhost:3000) v prehliadači.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📦 Deployment na Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Automatický deployment (Odporúčané)
 
-## Learn More
+1. Push projekt na GitHub:
+```bash
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin tvoj_github_repo_url
+git push -u origin main
+```
 
-To learn more about Next.js, take a look at the following resources:
+2. Choď na [vercel.com](https://vercel.com)
+3. Klikni na **"New Project"**
+4. Importuj svoj GitHub repository
+5. Pridaj Environment Variables:
+   - `NEXT_PUBLIC_CHALLONGE_USERNAME`
+   - `NEXT_PUBLIC_CHALLONGE_API_KEY`
+   - `NEXT_PUBLIC_TOURNAMENT_ID`
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+6. Klikni **"Deploy"**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Manuálny deployment cez CLI
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Nainštaluj Vercel CLI
+npm install -g vercel
 
-## Deploy on Vercel
+# Deploy
+vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Production deployment
+vercel --prod
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🗂️ Štruktúra projektu
+
+```
+.
+├── app/
+│   ├── api/
+│   │   ├── tournament/      # API endpoint pre turnaj
+│   │   ├── matches/          # API endpoint pre zápasy
+│   │   └── predictions/      # API endpoint pre tipy
+│   └── page.tsx             # Hlavná stránka
+├── components/
+│   ├── TournamentView.tsx   # Hlavný komponent turnaja
+│   └── MatchCard.tsx        # Komponent zápasu
+├── lib/
+│   ├── challonge/
+│   │   └── client.ts        # Challonge API klient
+│   ├── supabase/
+│   │   └── client.ts        # Supabase klient
+│   └── session.ts           # Session management
+├── types/
+│   └── challonge.ts         # TypeScript typy
+└── supabase-schema.sql      # SQL schéma pre databázu
+```
+
+## 🔧 API Endpointy
+
+### GET /api/tournament
+Vráti informácie o turnaji.
+
+### GET /api/matches
+Vráti všetky zápasy s informáciami o hráčoch.
+
+### GET /api/predictions?session_id={id}
+Vráti tipy pre danú session.
+
+### POST /api/predictions
+Vytvorí alebo aktualizuje tip.
+
+```json
+{
+  "session_id": "session_xxx",
+  "match_id": 123,
+  "predicted_winner_id": 456
+}
+```
+
+### GET /api/predictions/stats?match_id={id}
+Vráti štatistiky tipov pre zápas.
+
+## 🎯 Ako to funguje
+
+1. **Anonymné tipy**: Každý používateľ dostane unikátne session ID uložené v `localStorage`
+2. **Real-time aktualizácie**: Stránka sa automaticky obnovuje každých 30 sekúnd
+3. **Štatistiky**: Po zadaní tipu sa zobrazia percentuálne štatistiky všetkých tipov
+4. **Responzívny dizajn**: Funguje na mobile, tablete i desktope
+
+## 🛠️ Technológie
+
+- **Next.js 15** - React framework
+- **TypeScript** - Type safety
+- **TailwindCSS** - Styling
+- **Supabase** - Database a backend
+- **Challonge API** - Tournament data
+- **Vercel** - Hosting
+
+## 📝 Poznámky
+
+- Challonge API má limit 5,000 requestov mesačne na free pláne
+- Od marca 2026 bude potrebný platený plán pre viac requestov
+- Aplikácia používa anonymous auth, takže nie je potrebná registrácia
+- Tipy sú uložené v Supabase databáze
+
+## 🐛 Riešenie problémov
+
+### "Failed to fetch tournament data"
+- Skontroluj či máš správne nastavené `NEXT_PUBLIC_CHALLONGE_API_KEY` a `NEXT_PUBLIC_CHALLONGE_USERNAME`
+- Overte že tournament ID je správne
+
+### "Failed to save prediction"
+- Skontroluj či máš správne nastavené Supabase credentials
+- Overte či je SQL schéma správne nainštalovaná
+
+### Zápasy sa neobnovujú
+- Vyčisti cache: `rm -rf .next`
+- Reštartuj development server: `npm run dev`
+
+## 📄 Licencia
+
+MIT
+
+## 👨‍💻 Autor
+
+Vytvorené pre turnaj **f8qurooc** na Challonge.
