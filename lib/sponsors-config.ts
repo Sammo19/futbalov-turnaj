@@ -35,6 +35,12 @@ export const sponsors: Sponsor[] = [
     text: 'PETER TRANSPORTE',
   },
   {
+    type: 'image',
+    name: 'Luckafé',
+    image: 'luckafe.png',
+    text: 'Luckafé',
+  },
+  {
     type: 'text',
     name: 'Lukáš Skovajsa',
     text: 'Lukáš Skovajsa - servis plyn',
