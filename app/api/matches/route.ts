@@ -39,7 +39,40 @@ export async function GET() {
       player2: match.player2_id ? groupPlayerMap.get(match.player2_id) : null,
     }));
 
-    return NextResponse.json(enrichedMatches);
+    // Override playoff matches with hardcoded teams
+    const playoffMatches = enrichedMatches.map((match) => {
+      // Only override playoff matches (group_id === null)
+      if (match.group_id === null) {
+        // Find teams by name
+        const vlasskyOrechaci = participants.find(p => p.display_name === 'VLAŠSKY ORECHAČI');
+        const dzivyMix = participants.find(p => p.display_name === 'DZIVY MIX');
+        const glakticos = participants.find(p => p.display_name === 'GLAKTICOS');
+        const kamzici = participants.find(p => p.display_name === 'KAMZÍCI');
+
+        // Semifinal 1 (round 1, identifier A): Keep as is
+        // Semifinal 2 / 3rd place (round 1, identifier B): Vlašské orechy vs Dzivy mix
+        if (match.round === 1 && match.identifier === 'B') {
+          return {
+            ...match,
+            player1: vlasskyOrechaci || match.player1,
+            player2: dzivyMix || match.player2,
+          };
+        }
+
+        // Final (round 2, identifier C): GLAKTICOS vs KAMZÍCI
+        if (match.round === 2 && match.identifier === 'C') {
+          return {
+            ...match,
+            player1: glakticos || match.player1,
+            player2: kamzici || match.player2,
+          };
+        }
+      }
+
+      return match;
+    });
+
+    return NextResponse.json(playoffMatches);
   } catch (error) {
     console.error('Error in matches API:', error);
     return NextResponse.json(
