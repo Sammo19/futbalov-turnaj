@@ -178,7 +178,7 @@ export function MatchCard({ match, readOnly = false }: MatchCardProps) {
       >
         <div className="flex flex-col items-center gap-2">
           <div className="text-center">
-            <div className="text-lg font-bold text-white mb-1">{playerName}</div>
+            <div className="text-sm md:text-lg font-bold text-white mb-1 break-words leading-tight">{playerName}</div>
           </div>
 
           {isWinner && (
