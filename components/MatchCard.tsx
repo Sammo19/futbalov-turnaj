@@ -162,7 +162,7 @@ export function MatchCard({ match, readOnly = false }: MatchCardProps) {
           onClick: () => canPredict && handlePredict(playerId!),
           disabled: !canPredict || isSubmitting,
         })}
-        className={`flex-1 p-4 rounded-lg transition-all ${
+        className={`flex-1 p-3 md:p-4 rounded-lg transition-all ${
           !readOnly && canPredict
             ? 'hover:scale-105 cursor-pointer'
             : readOnly
@@ -217,7 +217,7 @@ export function MatchCard({ match, readOnly = false }: MatchCardProps) {
   };
 
   return (
-    <div className={`rounded-xl border-2 ${getStateColor()} p-4 backdrop-blur-sm`}>
+    <div className={`rounded-xl border-2 ${getStateColor()} p-3 md:p-4 backdrop-blur-sm`}>
       {match.state === 'complete' && (
         <div className="flex justify-center mb-3">
           <span className="text-xs bg-green-500/30 text-green-300 px-3 py-1 rounded-full border border-green-500/50 font-bold flex items-center gap-1">
