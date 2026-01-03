@@ -141,9 +141,9 @@ export function TournamentView({
       <div className="bg-gradient-to-br from-green-900/40 via-emerald-900/30 to-green-800/40 backdrop-blur-sm border border-green-700/50 rounded-2xl p-4 md:p-6 mb-8 shadow-2xl">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 flex items-center gap-2 md:gap-3">
-              <span className="text-3xl md:text-5xl">⚽</span>
-              <span className="truncate">{tournament.name}</span>
+            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 flex items-start gap-2 md:gap-3">
+              <span className="text-3xl md:text-5xl flex-shrink-0">⚽</span>
+              <span className="break-words leading-tight">{tournament.name}</span>
             </h1>
             <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-green-200">
               <span className="flex items-center gap-2">
@@ -191,12 +191,12 @@ export function TournamentView({
       </div>
 
       {/* Filters */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+      <div className="grid grid-cols-2 md:flex gap-2 mb-6">
         {(['all', 'group_a', 'group_b', 'semifinal', 'final', 'teams', 'predictions', 'stats'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setFilter(tab)}
-            className={`px-6 py-2 rounded-lg font-medium whitespace-nowrap transition shadow-md ${
+            className={`px-4 md:px-6 py-2 rounded-lg font-medium text-sm md:text-base whitespace-nowrap transition shadow-md ${
               filter === tab
                 ? 'bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-green-500/50'
                 : 'bg-slate-800/50 text-slate-300 hover:bg-green-900/30 hover:text-green-200 border border-slate-700/50'
