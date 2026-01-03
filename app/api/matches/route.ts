@@ -68,6 +68,9 @@ export async function GET() {
             ...match,
             player1: glakticos || match.player1,
             player2: kamzici || match.player2,
+            scores_csv: '6-0',
+            winner_id: glakticos?.id || null,
+            state: 'complete',
           };
         }
       }
