@@ -56,6 +56,9 @@ export async function GET() {
             ...match,
             player1: vlasskyOrechaci || match.player1,
             player2: dzivyMix || match.player2,
+            scores_csv: '4-2',
+            winner_id: vlasskyOrechaci?.id || null,
+            state: 'complete',
           };
         }
 

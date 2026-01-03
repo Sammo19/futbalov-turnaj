@@ -148,8 +148,8 @@ export function MatchCard({ match, readOnly = false }: MatchCardProps) {
     isPlayer1: boolean
   ) => {
     const playerName = player?.display_name || 'TBD';
-    // Only show winner for group stage matches, not playoff
-    const isWinner = match.group_id !== null && match.winner_id === playerId;
+    // Show winner for group stage matches and completed playoff matches
+    const isWinner = (match.group_id !== null || match.state === 'complete') && match.winner_id === playerId;
     const isMyPrediction = !readOnly && myPrediction === playerId;
     const canPredict = !readOnly && match.state !== 'complete' && playerId;
     const votePercentage = !readOnly && playerId ? getVotePercentage(playerId) : 0;
