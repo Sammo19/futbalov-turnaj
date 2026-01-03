@@ -29,19 +29,19 @@ export function Sponsors() {
 
 function SponsorCard({ sponsor }: { sponsor: typeof sponsors[0] }) {
   const content = (
-    <div className="bg-slate-700/50 hover:bg-slate-700/70 border border-slate-600 rounded-lg p-4 transition-all hover:scale-105 flex items-center justify-center min-h-[100px] md:min-h-[120px]">
+    <div className="bg-slate-700/50 hover:bg-slate-700/70 border border-slate-600 rounded-lg p-3 md:p-4 transition-all hover:scale-105 flex items-center justify-center min-h-[120px] md:min-h-[140px]">
       {sponsor.type === 'image' && sponsor.image ? (
-        <div className="relative w-full h-20 md:h-24">
+        <div className="relative w-full h-24 md:h-32">
           <Image
             src={`/sponsors/${sponsor.image}`}
             alt={sponsor.name}
             fill
-            className="object-contain"
+            className="object-contain p-2"
           />
         </div>
       ) : (
-        <div className="text-center">
-          <p className="text-sm md:text-lg font-bold text-white break-words">
+        <div className="text-center px-2">
+          <p className="text-xs md:text-sm font-bold text-white break-words leading-tight">
             {sponsor.text || sponsor.name}
           </p>
         </div>
