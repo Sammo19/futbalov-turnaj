@@ -78,15 +78,11 @@ export function TournamentView({
     } else if (filter === 'group_b') {
       includeGroup = groupKey === GROUP_B_ID;
     } else if (filter === 'semifinal') {
-      // Playoff matches have group_id = null or 0, and specific rounds
-      includeGroup = (groupKey === 0 || !groupKey) && matchesByGroup[groupKey].some(m =>
-        m.identifier?.toLowerCase().includes('semi') || m.round === 1
-      );
+      // Semifinal matches: group_id is null and round is 1
+      includeGroup = (groupKey === 0 || !groupKey) && matchesByGroup[groupKey].some(m => m.round === 1);
     } else if (filter === 'final') {
-      // Final matches
-      includeGroup = (groupKey === 0 || !groupKey) && matchesByGroup[groupKey].some(m =>
-        m.identifier?.toLowerCase().includes('final') || m.round === 2
-      );
+      // Final matches: group_id is null and round is 2
+      includeGroup = (groupKey === 0 || !groupKey) && matchesByGroup[groupKey].some(m => m.round === 2);
     }
 
     if (includeGroup) {
@@ -107,8 +103,8 @@ export function TournamentView({
       if (groupKey === 0) {
         // Check if it's semifinal or final based on matches
         const playoffMatches = matchesByGroup[groupKey] || [];
-        const hasSemi = playoffMatches.some(m => m.identifier?.toLowerCase().includes('semi') || m.round === 1);
-        const hasFinal = playoffMatches.some(m => m.identifier?.toLowerCase().includes('final') || m.round === 2);
+        const hasSemi = playoffMatches.some(m => m.round === 1);
+        const hasFinal = playoffMatches.some(m => m.round === 2);
 
         if (hasFinal && !hasSemi) return 'Finále';
         if (hasSemi && !hasFinal) return 'Semifinále';
