@@ -27,7 +27,7 @@ export function TournamentView({
   isRefreshing,
 }: TournamentViewProps) {
   const router = useRouter();
-  const [filter, setFilter] = useState<'all' | 'group_a' | 'group_b' | 'semifinal' | 'final' | 'teams' | 'predictions' | 'stats'>('all');
+  const [filter, setFilter] = useState<'all' | 'group_a' | 'group_b' | 'semifinal' | 'final' | 'teams' | 'predictions' | 'stats' | 'photos'>('all');
 
   // Get unique participants from matches
   const getUniqueParticipants = () => {
@@ -192,7 +192,7 @@ export function TournamentView({
 
       {/* Filters */}
       <div className="grid grid-cols-2 md:flex gap-2 mb-6">
-        {(['all', 'group_a', 'group_b', 'semifinal', 'final', 'teams', 'predictions', 'stats'] as const).map((tab) => (
+        {(['all', 'group_a', 'group_b', 'semifinal', 'final', 'teams', 'predictions', 'stats', 'photos'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setFilter(tab)}
@@ -210,6 +210,7 @@ export function TournamentView({
             {tab === 'teams' && 'Tímy'}
             {tab === 'predictions' && 'Tipovanie'}
             {tab === 'stats' && 'Výsledky tipovania'}
+            {tab === 'photos' && 'Fotky'}
           </button>
         ))}
       </div>
@@ -224,6 +225,19 @@ export function TournamentView({
         <PredictionsView matches={matches} />
       ) : filter === 'stats' ? (
         <StatsView matches={matches} />
+      ) : filter === 'photos' ? (
+        <div className="text-center py-16 bg-gradient-to-br from-slate-800/50 via-slate-700/30 to-slate-800/50 backdrop-blur-sm border border-slate-600/50 rounded-2xl">
+          <div className="text-6xl mb-6">📸</div>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Fotky z turnaja</h2>
+          <div className="max-w-md mx-auto px-4">
+            <p className="text-slate-300 text-lg mb-2">
+              Táto sekcia bude dostupná po skončení turnaja.
+            </p>
+            <p className="text-slate-400 text-sm">
+              Prístup k fotkám bude možný len so správnym heslom.
+            </p>
+          </div>
+        </div>
       ) : (
         /* Matches */
         <div className="space-y-8">
