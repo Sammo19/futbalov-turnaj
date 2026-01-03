@@ -657,7 +657,7 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-bold text-white">Skupina A</h3>
-            <span className={`text-sm px-3 py-1 rounded-full ${
+            <span className={`text-xs md:text-sm px-2 md:px-3 py-1 rounded-full whitespace-nowrap ${
               getGroupSemifinalistCount(GROUP_A_ID) >= 2
                 ? 'bg-green-500/20 text-green-400 border border-green-500/50'
                 : 'bg-slate-700 text-slate-300'
@@ -696,7 +696,7 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
         <div>
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-bold text-white">Skupina B</h3>
-            <span className={`text-sm px-3 py-1 rounded-full ${
+            <span className={`text-xs md:text-sm px-2 md:px-3 py-1 rounded-full whitespace-nowrap ${
               getGroupSemifinalistCount(GROUP_B_ID) >= 2
                 ? 'bg-green-500/20 text-green-400 border border-green-500/50'
                 : 'bg-slate-700 text-slate-300'
@@ -733,13 +733,13 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
       </div>
 
       {/* Finalists Selection */}
-      <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-            <span className="w-1 h-8 bg-yellow-500 rounded"></span>
-            Kto bude vo finále?
+      <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700 rounded-2xl p-4 md:p-6">
+        <div className="flex items-center justify-between mb-4 gap-2">
+          <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2 md:gap-3">
+            <span className="w-1 h-6 md:h-8 bg-yellow-500 rounded"></span>
+            <span className="leading-tight">Kto bude vo finále?</span>
           </h2>
-          <span className={`text-sm px-3 py-1 rounded-full ${
+          <span className={`text-xs md:text-sm px-2 md:px-3 py-1 rounded-full whitespace-nowrap flex-shrink-0 ${
             getFinalistCount() >= 2
               ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/50'
               : 'bg-slate-700 text-slate-300'

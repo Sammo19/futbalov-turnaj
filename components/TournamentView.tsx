@@ -138,14 +138,14 @@ export function TournamentView({
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl">
       {/* Header */}
-      <div className="bg-gradient-to-br from-green-900/40 via-emerald-900/30 to-green-800/40 backdrop-blur-sm border border-green-700/50 rounded-2xl p-6 mb-8 shadow-2xl">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
-              <span className="text-5xl">⚽</span>
-              {tournament.name}
+      <div className="bg-gradient-to-br from-green-900/40 via-emerald-900/30 to-green-800/40 backdrop-blur-sm border border-green-700/50 rounded-2xl p-4 md:p-6 mb-8 shadow-2xl">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 flex items-center gap-2 md:gap-3">
+              <span className="text-3xl md:text-5xl">⚽</span>
+              <span className="truncate">{tournament.name}</span>
             </h1>
-            <div className="flex items-center gap-4 text-sm text-green-200">
+            <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-green-200">
               <span className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
                 {tournament.state === 'underway' && 'Prebieha'}
@@ -159,9 +159,9 @@ export function TournamentView({
           </div>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg transition font-medium flex items-center gap-2 shadow-lg"
+            className="w-full md:w-auto px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg transition font-medium flex items-center justify-center gap-2 shadow-lg text-sm md:text-base whitespace-nowrap"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
             Obnoviť dáta
