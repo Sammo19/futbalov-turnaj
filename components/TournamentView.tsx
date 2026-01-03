@@ -78,15 +78,24 @@ export function TournamentView({
     } else if (filter === 'group_b') {
       includeGroup = groupKey === GROUP_B_ID;
     } else if (filter === 'semifinal') {
-      // Semifinal matches: group_id is null and round is 1
-      includeGroup = (groupKey === 0 || !groupKey) && matchesByGroup[groupKey].some(m => m.round === 1);
+      // Semifinal matches: only identifier B (3rd place)
+      includeGroup = (groupKey === 0 || !groupKey) && matchesByGroup[groupKey].some(m => m.identifier === 'B');
     } else if (filter === 'final') {
-      // Final matches: group_id is null and round is 2
-      includeGroup = (groupKey === 0 || !groupKey) && matchesByGroup[groupKey].some(m => m.round === 2);
+      // Final matches: only identifier C
+      includeGroup = (groupKey === 0 || !groupKey) && matchesByGroup[groupKey].some(m => m.identifier === 'C');
     }
 
     if (includeGroup) {
-      acc[groupKey] = matchesByGroup[groupKey];
+      let matches = matchesByGroup[groupKey];
+
+      // For semifinal/final filters, only include specific matches
+      if (filter === 'semifinal' && (groupKey === 0 || !groupKey)) {
+        matches = matches.filter(m => m.identifier === 'B');
+      } else if (filter === 'final' && (groupKey === 0 || !groupKey)) {
+        matches = matches.filter(m => m.identifier === 'C');
+      }
+
+      acc[groupKey] = matches;
     }
     return acc;
   }, {} as Record<number, typeof matches>);
