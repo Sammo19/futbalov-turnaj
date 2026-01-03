@@ -12,23 +12,27 @@ export type Sponsor = {
 export const sponsors: Sponsor[] = [
   {
     type: 'image',
-    name: 'ZFD',
+    name: 'ZIPSER FRUIT DISTILLERY',
     image: 'Logo_ZFD.jpg',
+    text: 'ZIPSER FRUIT DISTILLERY',
   },
   {
     type: 'image',
-    name: 'Erb',
+    name: 'Obec Bijacovce',
     image: 'erb.svg',
+    text: 'Obec Bijacovce',
   },
   {
     type: 'image',
-    name: 'Sponsor',
+    name: 'GP thermont s.r.o.',
     image: '310170900_507642644702219_7548674265634692107_n.png',
+    text: 'GP thermont s.r.o.',
   },
   {
     type: 'image',
-    name: 'Sponsor',
+    name: 'PETER TRANSPORTE',
     image: 'Snímka obrazovky 2026-01-03 o 8.22.55.png',
+    text: 'PETER TRANSPORTE',
   },
   {
     type: 'text',
