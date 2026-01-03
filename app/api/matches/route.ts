@@ -72,7 +72,16 @@ export async function GET() {
       return match;
     });
 
-    return NextResponse.json(playoffMatches);
+    // Filter out playoff matches without both players set
+    const filteredMatches = playoffMatches.filter((match) => {
+      // Keep all group stage matches
+      if (match.group_id !== null) return true;
+
+      // For playoff matches, only keep if both players are set
+      return match.player1 && match.player2;
+    });
+
+    return NextResponse.json(filteredMatches);
   } catch (error) {
     console.error('Error in matches API:', error);
     return NextResponse.json(
