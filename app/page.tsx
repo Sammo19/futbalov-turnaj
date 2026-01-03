@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { TournamentView } from '@/components/TournamentView';
+import { Sponsors } from '@/components/Sponsors';
 import { ChallongeTournament, ChallongeMatch, ChallongeParticipant } from '@/types/challonge';
 
 export default function Home() {
@@ -82,6 +83,7 @@ export default function Home() {
         onRefresh={fetchData}
         isRefreshing={loading}
       />
+      <Sponsors />
     </main>
   );
 }
