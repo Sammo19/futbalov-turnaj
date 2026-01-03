@@ -673,14 +673,21 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
                 <button
                   key={team.id}
                   onClick={() => handleTournamentPrediction('semifinalist', team.id)}
-                  className={`p-3 md:p-4 rounded-lg border-2 transition ${
+                  className={`p-2 md:p-4 rounded-lg border-2 transition ${
                     selected
                       ? 'border-orange-500 bg-orange-500/20'
                       : 'border-slate-600 bg-slate-700/50 hover:border-orange-400'
                   }`}
                 >
-                  <div className="text-white font-medium text-xs md:text-sm mb-1 break-words leading-tight">
-                    {team.display_name}
+                  <div className="text-white font-medium text-[11px] md:text-sm mb-1 break-words leading-tight">
+                    {team.display_name === 'GLAKTICOS' ? (
+                      <>
+                        <span className="block md:inline">GLAK</span>
+                        <span className="block md:inline">TICOS</span>
+                      </>
+                    ) : (
+                      team.display_name
+                    )}
                   </div>
                   {selected && <div className="text-orange-400 text-xs">✓ Váš tip</div>}
                   {votes > 0 && (
@@ -712,14 +719,21 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
                 <button
                   key={team.id}
                   onClick={() => handleTournamentPrediction('semifinalist', team.id)}
-                  className={`p-3 md:p-4 rounded-lg border-2 transition ${
+                  className={`p-2 md:p-4 rounded-lg border-2 transition ${
                     selected
                       ? 'border-orange-500 bg-orange-500/20'
                       : 'border-slate-600 bg-slate-700/50 hover:border-orange-400'
                   }`}
                 >
-                  <div className="text-white font-medium text-xs md:text-sm mb-1 break-words leading-tight">
-                    {team.display_name}
+                  <div className="text-white font-medium text-[11px] md:text-sm mb-1 break-words leading-tight">
+                    {team.display_name === 'GLAKTICOS' ? (
+                      <>
+                        <span className="block md:inline">GLAK</span>
+                        <span className="block md:inline">TICOS</span>
+                      </>
+                    ) : (
+                      team.display_name
+                    )}
                   </div>
                   {selected && <div className="text-orange-400 text-xs">✓ Váš tip</div>}
                   {votes > 0 && (
@@ -758,14 +772,21 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
               <button
                 key={team.id}
                 onClick={() => handleTournamentPrediction('finalist', team.id)}
-                className={`p-3 md:p-4 rounded-lg border-2 transition ${
+                className={`p-2 md:p-4 rounded-lg border-2 transition ${
                   selected
                     ? 'border-yellow-500 bg-yellow-500/20'
                     : 'border-slate-600 bg-slate-700/50 hover:border-yellow-400'
                 }`}
               >
-                <div className="text-white font-medium text-xs md:text-sm mb-1 break-words leading-tight">
-                  {team.display_name}
+                <div className="text-white font-medium text-[11px] md:text-sm mb-1 break-words leading-tight">
+                  {team.display_name === 'GLAKTICOS' ? (
+                    <>
+                      <span className="block md:inline">GLAK</span>
+                      <span className="block md:inline">TICOS</span>
+                    </>
+                  ) : (
+                    team.display_name
+                  )}
                 </div>
                 {selected && <div className="text-yellow-400 text-xs">✓ Váš tip</div>}
                 {votes > 0 && (
