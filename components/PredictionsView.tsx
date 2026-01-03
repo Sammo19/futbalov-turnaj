@@ -351,11 +351,13 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {groupMatches.map((match) => {
             const prediction = userPredictions.find(p => p.match_id === match.id);
+            const player1Name = match.player1?.display_name || 'TBD';
+            const player2Name = match.player2?.display_name || 'TBD';
             return (
               <button
                 key={match.id}
                 onClick={() => handleMatchClick(match)}
-                className="bg-slate-700/50 hover:bg-slate-700 border border-slate-600 hover:border-blue-500 rounded-lg p-4 transition cursor-pointer"
+                className="bg-slate-700/50 hover:bg-slate-700 border border-slate-600 hover:border-blue-500 rounded-lg p-3 md:p-4 transition cursor-pointer"
               >
                 {match.state === 'complete' && (
                   <div className="flex justify-center mb-2">
@@ -364,18 +366,25 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
                     </span>
                   </div>
                 )}
-                <div className="flex items-center justify-center gap-6">
+                <div className="flex items-center justify-center gap-4 md:gap-6">
                   <div className={`flex-1 text-center flex flex-col justify-center ${
                     prediction?.predicted_winner_id === match.player1?.id ? 'text-blue-400 font-bold' : 'text-white'
                   }`}>
-                    <div className="text-lg">
-                      {match.player1?.display_name || 'TBD'}
+                    <div className="text-sm md:text-lg break-words leading-tight">
+                      {player1Name === 'GLAKTICOS' ? (
+                        <>
+                          <span className="block md:inline">GLAK</span>
+                          <span className="block md:inline">TICOS</span>
+                        </>
+                      ) : (
+                        player1Name
+                      )}
                     </div>
                     {prediction?.predicted_winner_id === match.player1?.id && (
                       <div className="text-xs mt-1">✓ Váš tip</div>
                     )}
                   </div>
-                  <div className="flex flex-col items-center justify-center px-4">
+                  <div className="flex flex-col items-center justify-center px-2 md:px-4">
                     {match.scheduled_time && (
                       <div className="text-slate-400 text-xs mb-1">
                         {new Date(match.scheduled_time).toLocaleTimeString('sk-SK', {
@@ -390,8 +399,15 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
                   <div className={`flex-1 text-center flex flex-col justify-center ${
                     prediction?.predicted_winner_id === match.player2?.id ? 'text-blue-400 font-bold' : 'text-white'
                   }`}>
-                    <div className="text-lg">
-                      {match.player2?.display_name || 'TBD'}
+                    <div className="text-sm md:text-lg break-words leading-tight">
+                      {player2Name === 'GLAKTICOS' ? (
+                        <>
+                          <span className="block md:inline">GLAK</span>
+                          <span className="block md:inline">TICOS</span>
+                        </>
+                      ) : (
+                        player2Name
+                      )}
                     </div>
                     {prediction?.predicted_winner_id === match.player2?.id && (
                       <div className="text-xs mt-1">✓ Váš tip</div>
@@ -414,11 +430,13 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {playoffMatches.map((match) => {
               const prediction = userPredictions.find(p => p.match_id === match.id);
+              const player1Name = match.player1?.display_name || 'TBD';
+              const player2Name = match.player2?.display_name || 'TBD';
               return (
                 <button
                   key={match.id}
                   onClick={() => handleMatchClick(match)}
-                  className="bg-slate-700/50 hover:bg-slate-700 border border-slate-600 hover:border-purple-500 rounded-lg p-4 transition cursor-pointer"
+                  className="bg-slate-700/50 hover:bg-slate-700 border border-slate-600 hover:border-purple-500 rounded-lg p-3 md:p-4 transition cursor-pointer"
                 >
                   {match.state === 'complete' && (
                     <div className="flex justify-center mb-2">
@@ -427,18 +445,25 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
                       </span>
                     </div>
                   )}
-                  <div className="flex items-center justify-center gap-6">
+                  <div className="flex items-center justify-center gap-4 md:gap-6">
                     <div className={`flex-1 text-center flex flex-col justify-center ${
                       prediction?.predicted_winner_id === match.player1?.id ? 'text-purple-400 font-bold' : 'text-white'
                     }`}>
-                      <div className="text-lg">
-                        {match.player1?.display_name || 'TBD'}
+                      <div className="text-sm md:text-lg break-words leading-tight">
+                        {player1Name === 'GLAKTICOS' ? (
+                          <>
+                            <span className="block md:inline">GLAK</span>
+                            <span className="block md:inline">TICOS</span>
+                          </>
+                        ) : (
+                          player1Name
+                        )}
                       </div>
                       {prediction?.predicted_winner_id === match.player1?.id && (
                         <div className="text-xs mt-1">✓ Váš tip</div>
                       )}
                     </div>
-                    <div className="flex flex-col items-center justify-center px-4">
+                    <div className="flex flex-col items-center justify-center px-2 md:px-4">
                       {match.scheduled_time && (
                         <div className="text-slate-400 text-xs mb-1">
                           {new Date(match.scheduled_time).toLocaleTimeString('sk-SK', {
@@ -453,8 +478,15 @@ export function PredictionsView({ matches }: PredictionsViewProps) {
                     <div className={`flex-1 text-center flex flex-col justify-center ${
                       prediction?.predicted_winner_id === match.player2?.id ? 'text-purple-400 font-bold' : 'text-white'
                     }`}>
-                      <div className="text-lg">
-                        {match.player2?.display_name || 'TBD'}
+                      <div className="text-sm md:text-lg break-words leading-tight">
+                        {player2Name === 'GLAKTICOS' ? (
+                          <>
+                            <span className="block md:inline">GLAK</span>
+                            <span className="block md:inline">TICOS</span>
+                          </>
+                        ) : (
+                          player2Name
+                        )}
                       </div>
                       {prediction?.predicted_winner_id === match.player2?.id && (
                         <div className="text-xs mt-1">✓ Váš tip</div>
