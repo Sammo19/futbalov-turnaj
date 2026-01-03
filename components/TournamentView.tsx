@@ -209,7 +209,7 @@ export function TournamentView({
             {tab === 'final' && 'Finále'}
             {tab === 'teams' && 'Tímy'}
             {tab === 'predictions' && 'Tipovanie'}
-            {tab === 'stats' && 'Štatistiky'}
+            {tab === 'stats' && 'Výsledky'}
           </button>
         ))}
       </div>
