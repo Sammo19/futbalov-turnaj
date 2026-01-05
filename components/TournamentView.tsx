@@ -7,6 +7,7 @@ import { MatchCard } from './MatchCard';
 import { TeamsView } from './TeamsView';
 import { PredictionsView } from './PredictionsView';
 import { StatsView } from './StatsView';
+import { ResultsTable } from './ResultsTable';
 import { format } from 'date-fns';
 import { declineUcastnik, declineZapas } from '@/lib/slovak';
 
@@ -27,7 +28,7 @@ export function TournamentView({
   isRefreshing,
 }: TournamentViewProps) {
   const router = useRouter();
-  const [filter, setFilter] = useState<'all' | 'group_a' | 'group_b' | 'semifinal' | 'final' | 'teams' | 'predictions' | 'stats' | 'photos'>('all');
+  const [filter, setFilter] = useState<'all' | 'group_a' | 'group_b' | 'semifinal' | 'final' | 'teams' | 'predictions' | 'stats' | 'photos' | 'results'>('all');
 
   // Get unique participants from matches
   const getUniqueParticipants = () => {
@@ -197,7 +198,7 @@ export function TournamentView({
 
       {/* Filters */}
       <div className="grid grid-cols-2 md:flex gap-2 mb-6">
-        {(['all', 'group_a', 'group_b', 'semifinal', 'final', 'teams', 'predictions', 'stats', 'photos'] as const).map((tab) => (
+        {(['all', 'group_a', 'group_b', 'semifinal', 'final', 'teams', 'predictions', 'stats', 'results', 'photos'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setFilter(tab)}
@@ -215,6 +216,7 @@ export function TournamentView({
             {tab === 'teams' && 'Tímy'}
             {tab === 'predictions' && 'Tipovanie'}
             {tab === 'stats' && 'Výsledky tipovania'}
+            {tab === 'results' && 'Výsledky'}
             {tab === 'photos' && 'Fotky'}
           </button>
         ))}
@@ -230,6 +232,8 @@ export function TournamentView({
         <PredictionsView matches={matches} />
       ) : filter === 'stats' ? (
         <StatsView matches={matches} />
+      ) : filter === 'results' ? (
+        <ResultsTable matches={matches} />
       ) : filter === 'photos' ? (
         <div className="text-center py-16 bg-gradient-to-br from-slate-800/50 via-slate-700/30 to-slate-800/50 backdrop-blur-sm border border-slate-600/50 rounded-2xl">
           <div className="text-6xl mb-6">📸</div>
