@@ -8,6 +8,7 @@ import { TeamsView } from './TeamsView';
 import { PredictionsView } from './PredictionsView';
 import { StatsView } from './StatsView';
 import { ResultsTable } from './ResultsTable';
+import { PhotosView } from './PhotosView';
 import { format } from 'date-fns';
 import { declineUcastnik, declineZapas } from '@/lib/slovak';
 
@@ -235,18 +236,7 @@ export function TournamentView({
       ) : filter === 'results' ? (
         <ResultsTable matches={matches} />
       ) : filter === 'photos' ? (
-        <div className="text-center py-16 bg-gradient-to-br from-slate-800/50 via-slate-700/30 to-slate-800/50 backdrop-blur-sm border border-slate-600/50 rounded-2xl">
-          <div className="text-6xl mb-6">📸</div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Fotky z turnaja</h2>
-          <div className="max-w-md mx-auto px-4">
-            <p className="text-slate-300 text-lg mb-2">
-              Táto sekcia bude dostupná po skončení turnaja.
-            </p>
-            <p className="text-slate-400 text-sm">
-              Prístup k fotkám bude možný len so správnym heslom.
-            </p>
-          </div>
-        </div>
+        <PhotosView />
       ) : (
         /* Matches */
         <div className="space-y-8">
