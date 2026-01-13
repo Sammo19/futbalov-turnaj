@@ -2,14 +2,16 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import JSZip from 'jszip';
 
-const PHOTO_PASSWORD = 'bijacovce2026'; // Heslo pre prístup k fotkám
+const PHOTO_PASSWORD = 'Bijacovce@2026!Futbal'; // Heslo pre prístup k fotkám
 
 export function PhotosView() {
   const [password, setPassword] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [error, setError] = useState('');
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // Generate array of photo filenames (001-168)
   const photos = Array.from({ length: 168 }, (_, i) => {
@@ -19,12 +21,50 @@ export function PhotosView() {
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.toLowerCase() === PHOTO_PASSWORD) {
+    if (password === PHOTO_PASSWORD) {
       setIsUnlocked(true);
       setError('');
     } else {
       setError('Nesprávne heslo. Skúste to znova.');
       setPassword('');
+    }
+  };
+
+  const downloadAllPhotos = async () => {
+    setIsDownloading(true);
+    try {
+      const zip = new JSZip();
+      const folder = zip.folder('Bijacovce-Futbalovy-Turnaj-2026');
+
+      // Fetch all photos and add to ZIP
+      for (let i = 0; i < photos.length; i++) {
+        const photoUrl = `/photos/${photos[i]}`;
+        try {
+          const response = await fetch(photoUrl);
+          const blob = await response.blob();
+          folder?.file(photos[i], blob);
+        } catch (error) {
+          console.error(`Failed to download ${photos[i]}:`, error);
+        }
+      }
+
+      // Generate ZIP file
+      const content = await zip.generateAsync({ type: 'blob' });
+
+      // Create download link
+      const url = window.URL.createObjectURL(content);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'Bijacovce-Futbalovy-Turnaj-2026-Fotky.zip';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error creating ZIP:', error);
+      alert('Chyba pri vytváraní ZIP súboru. Skúste to znova.');
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -96,13 +136,39 @@ export function PhotosView() {
     <>
       <div className="bg-gradient-to-br from-slate-800/50 via-slate-700/30 to-slate-800/50 backdrop-blur-sm border border-slate-600/50 rounded-2xl p-4 md:p-6">
         <div className="mb-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 flex items-center gap-3">
-            <span className="text-3xl">📸</span>
-            Fotky z turnaja
-          </h2>
-          <p className="text-slate-300">
-            Fotografie: Bernard Šmihuľa
-          </p>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 flex items-center gap-3">
+                <span className="text-3xl">📸</span>
+                Fotky z turnaja
+              </h2>
+              <p className="text-slate-300">
+                Fotografie: Bernard Šmihuľa
+              </p>
+            </div>
+            <button
+              onClick={downloadAllPhotos}
+              disabled={isDownloading}
+              className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed text-white rounded-lg transition font-medium flex items-center justify-center gap-2 shadow-lg text-sm md:text-base whitespace-nowrap"
+            >
+              {isDownloading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Sťahujem...
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Stiahnuť všetky fotky (ZIP)
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
