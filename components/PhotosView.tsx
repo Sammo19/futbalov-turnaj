@@ -12,12 +12,31 @@ export function PhotosView() {
   const [error, setError] = useState('');
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [selectedPhotos, setSelectedPhotos] = useState<Set<number>>(new Set());
 
   // Generate array of photo filenames (001-168)
   const photos = Array.from({ length: 168 }, (_, i) => {
     const num = String(i + 1).padStart(3, '0');
     return `2026-Bijacovce-Futbalový turnaj-${num}.jpg`;
   });
+
+  const togglePhotoSelection = (index: number) => {
+    const newSelection = new Set(selectedPhotos);
+    if (newSelection.has(index)) {
+      newSelection.delete(index);
+    } else {
+      newSelection.add(index);
+    }
+    setSelectedPhotos(newSelection);
+  };
+
+  const selectAllPhotos = () => {
+    setSelectedPhotos(new Set(Array.from({ length: photos.length }, (_, i) => i)));
+  };
+
+  const clearSelection = () => {
+    setSelectedPhotos(new Set());
+  };
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,14 +49,14 @@ export function PhotosView() {
     }
   };
 
-  const downloadAllPhotos = async () => {
+  const downloadPhotos = async (photoIndices: number[]) => {
     setIsDownloading(true);
     try {
       const zip = new JSZip();
       const folder = zip.folder('Bijacovce-Futbalovy-Turnaj-2026');
 
-      // Fetch all photos and add to ZIP
-      for (let i = 0; i < photos.length; i++) {
+      // Fetch photos and add to ZIP
+      for (const i of photoIndices) {
         const photoUrl = `/photos/${photos[i]}`;
         try {
           const response = await fetch(photoUrl);
@@ -55,7 +74,10 @@ export function PhotosView() {
       const url = window.URL.createObjectURL(content);
       const link = document.createElement('a');
       link.href = url;
-      link.download = 'Bijacovce-Futbalovy-Turnaj-2026-Fotky.zip';
+      const fileName = photoIndices.length === photos.length
+        ? 'Bijacovce-Futbalovy-Turnaj-2026-Fotky.zip'
+        : `Bijacovce-Futbalovy-Turnaj-2026-Vyber-${photoIndices.length}-fotiek.zip`;
+      link.download = fileName;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -66,6 +88,14 @@ export function PhotosView() {
     } finally {
       setIsDownloading(false);
     }
+  };
+
+  const downloadAllPhotos = () => {
+    downloadPhotos(Array.from({ length: photos.length }, (_, i) => i));
+  };
+
+  const downloadSelectedPhotos = () => {
+    downloadPhotos(Array.from(selectedPhotos).sort((a, b) => a - b));
   };
 
   const openLightbox = (index: number) => {
@@ -162,48 +192,112 @@ export function PhotosView() {
                 Fotograf: Bernard Šmihuľa
               </a>
             </div>
-            <button
-              onClick={downloadAllPhotos}
-              disabled={isDownloading}
-              className="px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed text-white rounded-lg transition font-medium flex items-center justify-center gap-2 shadow-lg text-sm md:text-base whitespace-nowrap"
-            >
-              {isDownloading ? (
-                <>
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Sťahujem...
-                </>
-              ) : (
-                <>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                  Stiahnuť všetky fotky (ZIP)
-                </>
-              )}
-            </button>
+            <div className="flex flex-col gap-2 w-full md:w-auto">
+              <div className="flex gap-2">
+                <button
+                  onClick={downloadAllPhotos}
+                  disabled={isDownloading}
+                  className="flex-1 md:flex-none px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed text-white rounded-lg transition font-medium flex items-center justify-center gap-2 shadow-lg text-sm md:text-base whitespace-nowrap"
+                >
+                  {isDownloading ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sťahujem...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                      </svg>
+                      Všetky
+                    </>
+                  )}
+                </button>
+                {selectedPhotos.size > 0 && (
+                  <button
+                    onClick={downloadSelectedPhotos}
+                    disabled={isDownloading}
+                    className="flex-1 md:flex-none px-4 md:px-6 py-2 md:py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:from-slate-600 disabled:to-slate-700 disabled:cursor-not-allowed text-white rounded-lg transition font-medium flex items-center justify-center gap-2 shadow-lg text-sm md:text-base whitespace-nowrap"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Vybrané ({selectedPhotos.size})
+                  </button>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={selectAllPhotos}
+                  className="flex-1 px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition text-xs md:text-sm"
+                >
+                  Vybrať všetky
+                </button>
+                <button
+                  onClick={clearSelection}
+                  className="flex-1 px-3 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition text-xs md:text-sm"
+                >
+                  Zrušiť výber
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {photos.map((photo, index) => (
-            <div
-              key={photo}
-              onClick={() => openLightbox(index)}
-              className="relative aspect-square rounded-lg overflow-hidden cursor-pointer group bg-slate-900/50"
-            >
-              <Image
-                src={`/photos/${photo}`}
-                alt={`Turnaj foto ${index + 1}`}
-                fill
-                className="object-cover transition-transform group-hover:scale-110"
-                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-              />
-              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
-            </div>
-          ))}
+          {photos.map((photo, index) => {
+            const isSelected = selectedPhotos.has(index);
+            return (
+              <div
+                key={photo}
+                className="relative aspect-square rounded-lg overflow-hidden bg-slate-900/50"
+              >
+                {/* Checkbox */}
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    togglePhotoSelection(index);
+                  }}
+                  className="absolute top-2 left-2 z-10 cursor-pointer"
+                >
+                  <div className={`w-6 h-6 rounded border-2 flex items-center justify-center transition ${
+                    isSelected
+                      ? 'bg-green-500 border-green-500'
+                      : 'bg-slate-900/70 border-slate-400 hover:border-green-400'
+                  }`}>
+                    {isSelected && (
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+
+                {/* Image */}
+                <div
+                  onClick={() => openLightbox(index)}
+                  className="cursor-pointer group w-full h-full"
+                >
+                  <Image
+                    src={`/photos/${photo}`}
+                    alt={`Turnaj foto ${index + 1}`}
+                    fill
+                    className="object-cover transition-transform group-hover:scale-110"
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                </div>
+
+                {/* Selected indicator */}
+                {isSelected && (
+                  <div className="absolute inset-0 border-4 border-green-500 pointer-events-none rounded-lg" />
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
