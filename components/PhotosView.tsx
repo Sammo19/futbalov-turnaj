@@ -14,11 +14,13 @@ export function PhotosView() {
   const [isDownloading, setIsDownloading] = useState(false);
   const [selectedPhotos, setSelectedPhotos] = useState<Set<number>>(new Set());
 
-  // Generate array of photo filenames (001-168)
-  const photos = Array.from({ length: 168 }, (_, i) => {
-    const num = String(i + 1).padStart(3, '0');
-    return `2026-Bijacovce-Futbalový turnaj-${num}.jpg`;
-  });
+  // Generate array of photo filenames (001-168, excluding 003 and 146)
+  const photos = Array.from({ length: 168 }, (_, i) => i + 1)
+    .filter(num => num !== 3 && num !== 146)
+    .map(num => {
+      const numStr = String(num).padStart(3, '0');
+      return `2026-Bijacovce-Futbalový turnaj-${numStr}.jpg`;
+    });
 
   const togglePhotoSelection = (index: number) => {
     const newSelection = new Set(selectedPhotos);
