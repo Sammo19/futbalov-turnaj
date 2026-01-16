@@ -116,7 +116,17 @@ export function PhotosView() {
   };
 
   const downloadAllPhotos = () => {
-    downloadPhotos(Array.from({ length: photos.length }, (_, i) => i));
+    // Use server-side API to generate ZIP for faster download
+    setIsDownloading(true);
+    const link = document.createElement('a');
+    link.href = '/api/photos/download-all';
+    link.download = 'Bijacovce-Futbalovy-Turnaj-2026-Vsetky-Fotky.zip';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    // Reset downloading state after a delay
+    setTimeout(() => setIsDownloading(false), 2000);
   };
 
   const downloadSelectedPhotos = () => {
