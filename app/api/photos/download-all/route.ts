@@ -27,19 +27,19 @@ export async function GET() {
       folder?.file(file, fileData);
     }
 
-    // Generate ZIP buffer
-    const zipBuffer = await zip.generateAsync({
-      type: 'nodebuffer',
+    // Generate ZIP as ArrayBuffer (directly compatible with NextResponse)
+    const zipArrayBuffer = await zip.generateAsync({
+      type: 'arraybuffer',
       compression: 'DEFLATE',
       compressionOptions: { level: 6 }
     });
 
     // Return ZIP as download
-    return new NextResponse(zipBuffer, {
+    return new NextResponse(zipArrayBuffer, {
       headers: {
         'Content-Type': 'application/zip',
         'Content-Disposition': 'attachment; filename="Bijacovce-Futbalovy-Turnaj-2026-Vsetky-Fotky.zip"',
-        'Content-Length': zipBuffer.length.toString(),
+        'Content-Length': zipArrayBuffer.byteLength.toString(),
       },
     });
   } catch (error) {
