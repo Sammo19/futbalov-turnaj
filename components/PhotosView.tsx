@@ -13,6 +13,7 @@ export function PhotosView() {
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [selectedPhotos, setSelectedPhotos] = useState<Set<number>>(new Set());
+  const [downloadProgress, setDownloadProgress] = useState<{ current: number; total: number } | null>(null);
 
   // Generate array of photo filenames (001-168, excluding 003 and 146)
   const photos = Array.from({ length: 168 }, (_, i) => i + 1)
@@ -53,24 +54,45 @@ export function PhotosView() {
 
   const downloadPhotos = async (photoIndices: number[]) => {
     setIsDownloading(true);
+    setDownloadProgress({ current: 0, total: photoIndices.length });
+
     try {
       const zip = new JSZip();
       const folder = zip.folder('Bijacovce-Futbalovy-Turnaj-2026');
 
-      // Fetch photos and add to ZIP
-      for (const i of photoIndices) {
-        const photoUrl = `/photos/${photos[i]}`;
-        try {
-          const response = await fetch(photoUrl);
-          const blob = await response.blob();
-          folder?.file(photos[i], blob);
-        } catch (error) {
-          console.error(`Failed to download ${photos[i]}:`, error);
-        }
+      // Download photos in parallel batches (100 at a time for maximum speed)
+      const BATCH_SIZE = 100;
+      const batches = [];
+      for (let i = 0; i < photoIndices.length; i += BATCH_SIZE) {
+        batches.push(photoIndices.slice(i, i + BATCH_SIZE));
+      }
+
+      let completed = 0;
+      for (const batch of batches) {
+        await Promise.all(
+          batch.map(async (i) => {
+            const photoUrl = `/photos/${photos[i]}`;
+            try {
+              const response = await fetch(photoUrl);
+              const blob = await response.blob();
+              folder?.file(photos[i], blob);
+            } catch (error) {
+              console.error(`Failed to download ${photos[i]}:`, error);
+            } finally {
+              completed++;
+              setDownloadProgress({ current: completed, total: photoIndices.length });
+            }
+          })
+        );
       }
 
       // Generate ZIP file
-      const content = await zip.generateAsync({ type: 'blob' });
+      setDownloadProgress({ current: photoIndices.length, total: photoIndices.length });
+      const content = await zip.generateAsync({
+        type: 'blob',
+        compression: 'DEFLATE',
+        compressionOptions: { level: 6 }
+      });
 
       // Create download link
       const url = window.URL.createObjectURL(content);
@@ -89,6 +111,7 @@ export function PhotosView() {
       alert('Chyba pri vytváraní ZIP súboru. Skúste to znova.');
     } finally {
       setIsDownloading(false);
+      setDownloadProgress(null);
     }
   };
 
@@ -207,7 +230,7 @@ export function PhotosView() {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                      Sťahujem...
+                      {downloadProgress ? `${downloadProgress.current}/${downloadProgress.total}` : 'Sťahujem...'}
                     </>
                   ) : (
                     <>
@@ -247,6 +270,27 @@ export function PhotosView() {
               </div>
             </div>
           </div>
+
+          {/* Progress Bar */}
+          {downloadProgress && (
+            <div className="mt-4 bg-slate-900/50 rounded-lg p-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-white text-sm font-medium">
+                  Sťahujem fotky...
+                </span>
+                <span className="text-green-400 text-sm font-bold">
+                  {downloadProgress.current} / {downloadProgress.total}
+                  {' '}({Math.round((downloadProgress.current / downloadProgress.total) * 100)}%)
+                </span>
+              </div>
+              <div className="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
+                <div
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 h-full transition-all duration-300 ease-out"
+                  style={{ width: `${(downloadProgress.current / downloadProgress.total) * 100}%` }}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
